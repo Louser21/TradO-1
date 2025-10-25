@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "824287432395",
+    "project_id": "trado-1",
+    "storage_bucket": "trado-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824287432395:android:57375594562e7558f3554e",
+        "android_client_info": {
+          "package_name": "com.example.trado"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr4rv_hgZe3xiYXB6s4R2H8ic3SBhG728"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
