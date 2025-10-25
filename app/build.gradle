@@ -2,6 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+/*allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs.add("-Xlint:all")options.compilerArgs.add("-Xlint:-processing")
+    }
+}
+
+ */
+
 android {
     namespace 'com.example.trado'
     compileSdk 36
@@ -22,14 +30,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 }
 
-dependencies {
 
+dependencies {
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity

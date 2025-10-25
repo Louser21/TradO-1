@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TradO">
         <activity
+            android:name=".LoginOptionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
