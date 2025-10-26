@@ -3,6 +3,7 @@ package com.example.trado;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,12 +16,14 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.trado.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
-
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -31,44 +34,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-        if (firebaseAuth.getCurrentUser() == null)
-        {
+        // If user not logged in, go to login options
+        if (currentUser == null) {
             startLoginOptions();
+            finish(); // optional: prevent returning to MainActivity without login
+            return;
         }
+
+        // Network check (off main thread)
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://www.google.com");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setConnectTimeout(5000);
+                urlConnection.connect();
+                if (urlConnection.getResponseCode() == 200) {
+                    runOnUiThread(() -> Toast.makeText(this, "Internet working ✅", Toast.LENGTH_SHORT).show());
+                }
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this, "No internet ❌", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
 
         showHomeFragment();
 
-        binding.bottomNv.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                int itemId = menuItem.getItemId();
-                if(itemId == R.id.menu_home)
-                {
-                    showHomeFragment();
-
-                    return true;
-                } else if (itemId == R.id.menu_chats)
-                {
-                    showChatsFragment();
-
-                    return true;
-                } else if (itemId == R.id.menu_my_ads)
-                {
-                    showMyAdsFragment();
-
-                    return true;
-                } else if (itemId == R.id.menu_account)
-                {
-                    showAccountFragment();
-
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+        binding.bottomNv.setOnItemSelectedListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            if(itemId == R.id.menu_home) showHomeFragment();
+            else if(itemId == R.id.menu_chats) showChatsFragment();
+            else if(itemId == R.id.menu_my_ads) showMyAdsFragment();
+            else if(itemId == R.id.menu_account) showAccountFragment();
+            else return false;
+            return true;
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -78,43 +79,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void showHomeFragment() {
         binding.toolbarTitleTv.setText("Home");
-
-        HomeFragment fragment = new HomeFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(binding.fragmentsFl.getId(), fragment, "HomeFragment");
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(binding.fragmentsFl.getId(), new HomeFragment(), "HomeFragment")
+                .commit();
     }
 
     private void showChatsFragment() {
         binding.toolbarTitleTv.setText("Chats");
-
-        ChatsFragment fragment = new ChatsFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(binding.fragmentsFl.getId(), fragment, "ChatsFragment");
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(binding.fragmentsFl.getId(), new ChatsFragment(), "ChatsFragment")
+                .commit();
     }
 
     private void showMyAdsFragment() {
         binding.toolbarTitleTv.setText("My Ads");
-
-        MyAdsFragment fragment = new MyAdsFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(binding.fragmentsFl.getId(), fragment, "MyAdsFragment");
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(binding.fragmentsFl.getId(), new MyAdsFragment(), "MyAdsFragment")
+                .commit();
     }
 
     private void showAccountFragment() {
         binding.toolbarTitleTv.setText("Account");
-
-        AccountFragment fragment = new AccountFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(binding.fragmentsFl.getId(), fragment, "AccountFragment");
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(binding.fragmentsFl.getId(), new AccountFragment(), "AccountFragment")
+                .commit();
     }
 
-    private void startLoginOptions()
-    {
+    private void startLoginOptions() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }
-
 }

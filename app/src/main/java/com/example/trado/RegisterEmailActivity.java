@@ -88,9 +88,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     Log.d(TAG, "onSuccess: User registered");
-                    progressDialog.dismiss();
-                    startActivity(new Intent(RegisterEmailActivity.this, MainActivity.class));
-                    finish();
+                    updateUserInfo();
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "onFailure: " + e.getMessage());

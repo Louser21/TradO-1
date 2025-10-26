@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "824287432395",
+    "firebase_url": "https://trado-1-default-rtdb.firebaseio.com",
     "project_id": "trado-1",
     "storage_bucket": "trado-1.firebasestorage.app"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "824287432395-s4al54v49s9hv4f9kqdc55m2n7v2k8lr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trado",
+            "certificate_hash": "e3ec0260dffc27dbf176bcd1803b260481b2bcef"
+          }
+        },
         {
           "client_id": "824287432395-gqatb2ijtajfc3o4q08eoeh3gh8eau24.apps.googleusercontent.com",
           "client_type": 3

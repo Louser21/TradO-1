@@ -24,41 +24,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:src="@drawable/wwy"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:layout_marginBottom="40dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginGoogleBtn"
+                android:id="@+id/loginBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:text="Login"
                 android:minHeight="@dimen/m_button_height"
-                android:text="Continue With Google"
-                app:cornerRadius="8dp"
-                app:icon="@drawable/ic_google_white"/>
+                app:cornerRadius="8dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginPhoneBtn"
+                android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Continue With Phone"
-                app:cornerRadius="8dp"
-                android:minHeight="@dimen/m_button_height"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginEmailBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Continue With Email"
-                app:cornerRadius="8dp"
-                android:minHeight="@dimen/m_button_height"/>
-
+                android:text="Register"
+                android:minHeight="@dimen/m_button_height"
+                android:layout_marginTop="20dp"
+                app:cornerRadius="8dp"/>
         </LinearLayout>
 
     </ScrollView>
