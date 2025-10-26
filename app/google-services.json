@@ -12,7 +12,12 @@
           "package_name": "com.example.trado"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "824287432395-gqatb2ijtajfc3o4q08eoeh3gh8eau24.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCr4rv_hgZe3xiYXB6s4R2H8ic3SBhG728"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "824287432395-gqatb2ijtajfc3o4q08eoeh3gh8eau24.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

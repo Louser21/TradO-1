@@ -14,11 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TradO"
         android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.TradO">
         <activity
             android:name=".RegisterEmailActivity"
             android:exported="false" />
         <activity
             android:name=".LoginEmailActivity"
+            android:name=".LoginOptionsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
