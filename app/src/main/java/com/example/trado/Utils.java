@@ -8,7 +8,7 @@ public class Utils {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static long getTimeStamp(){
+    public static long getTimestamp(){
         return System.currentTimeMillis();
     }
 }

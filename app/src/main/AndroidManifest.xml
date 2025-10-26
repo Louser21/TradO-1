@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TradO"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RegisterEmailActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginEmailActivity"
             android:exported="false" />
         <activity
