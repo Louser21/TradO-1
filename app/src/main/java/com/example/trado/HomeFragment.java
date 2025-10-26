@@ -11,6 +11,13 @@ import android.view.ViewGroup;
 
 public class HomeFragment extends Fragment {
 
+    // Declare these variables
+    private String mParam1;
+    private String mParam2;
+
+    // Optional argument keys
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     public HomeFragment() {
         // Required empty public constructor

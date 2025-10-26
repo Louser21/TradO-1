@@ -1,5 +1,6 @@
 package com.example.trado;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -13,10 +14,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trado.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        firebaseAuth = firebaseAuth.getInstance();
+
+        if (firebaseAuth.getCurrentUser() == null)
+        {
+            startLoginOptions();
+        }
 
         showHomeFragment();
 
@@ -99,4 +110,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(binding.fragmentsFl.getId(), fragment, "AccountFragment");
         fragmentTransaction.commit();
     }
+
+    private void startLoginOptions()
+    {
+        startActivity(new Intent(this, LoginOptionsActivity.class));
+    }
+
 }
