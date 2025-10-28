@@ -58,12 +58,30 @@ public class LoginEmailActivity extends AppCompatActivity {
             }
         });
 
+        binding.forgotPasswordTv.setOnClickListener(v -> {
+            String email = binding.emailEt.getText().toString().trim();
+            forgotPassword(email);
+        });
+
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
     }
+
+    private void forgotPassword(String email) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Utils.toast(this, "Enter a valid email first");
+            return;
+        }
+
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnSuccessListener(aVoid -> Utils.toast(this, "Reset email sent to " + email))
+                .addOnFailureListener(e -> Utils.toast(this, "Failed: " + e.getMessage()));
+    }
+
 
     private String email, password;
 

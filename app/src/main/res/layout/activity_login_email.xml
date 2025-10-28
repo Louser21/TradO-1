@@ -116,6 +116,8 @@
                 android:inputType="textPassword"
                 tools:text="@tools:sample/full_names" />
 
+
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -125,6 +127,18 @@
             android:layout_alignParentBottom="true"
             android:text="Login"
             />
+        <TextView
+            android:id="@+id/forgotPasswordTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:textColor="@color/purple_500"
+            android:textStyle="bold"
+            android:layout_above="@id/loginBtn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
     </RelativeLayout>
 
