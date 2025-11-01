@@ -60,7 +60,7 @@
             android:id="@+id/adFavBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_heart_outline_black"
+            android:src="@drawable/ic_heart_outline_white"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Favorite"
             android:padding="8dp"
@@ -68,3 +68,5 @@
             android:visibility="gone" tools:visibility="visible"/> </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+
+
