@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@color/white"
     tools:context=".HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Search Bar -->
+    <EditText
+        android:id="@+id/searchEt"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home" />
+        android:layout_height="wrap_content"
+        android:hint="Search ads or categories..."
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="8dp"
+        android:background="@drawable/bg_rounded"
+        android:padding="12dp"
+        android:inputType="text"
+        android:textSize="14sp"
+        android:layout_marginBottom="10dp" />
 
-</FrameLayout>
+    <!-- Browse Categories -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BROWSE CATEGORIES"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:layout_marginBottom="6dp"
+        android:letterSpacing="0.02" />
+
+    <!-- Horizontal Categories Recycler -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoriesRv"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        tools:listitem="@layout/item_category" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        android:layout_marginVertical="10dp" />
+
+    <!-- Ads Recycler -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_ad" />
+
+</LinearLayout>

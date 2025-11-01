@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,20 +44,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Network check (off main thread)
-        new Thread(() -> {
-            try {
-                URL url = new URL("https://www.google.com");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setConnectTimeout(5000);
-                urlConnection.connect();
-                if (urlConnection.getResponseCode() == 200) {
-                    runOnUiThread(() -> Toast.makeText(this, "Internet working ✅", Toast.LENGTH_SHORT).show());
-                }
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(this, "No internet ❌", Toast.LENGTH_SHORT).show());
-            }
-        }).start();
 
         showHomeFragment();
 
@@ -68,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
             else if(itemId == R.id.menu_account) showAccountFragment();
             else return false;
             return true;
+        });
+
+        binding.sellFab.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddAdActivity.class);
+            startActivity(intent);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
