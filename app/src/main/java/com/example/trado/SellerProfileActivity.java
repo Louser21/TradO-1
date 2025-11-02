@@ -24,23 +24,20 @@ public class SellerProfileActivity extends AppCompatActivity {
 
     private String sellerUserId;
 
-    // UI elements
     private ImageButton backBtn;
     private ImageView profileImageIv;
     private TextView sellerNameTv, memberSinceTv;
     private RecyclerView sellerAdsRv;
 
-    // Firebase
     private DatabaseReference usersRef, adsRef;
     private SellerAdsAdapter sellerAdsAdapter;
-    private List<Ad> adList; // Assuming you have an 'Ad' data model
+    private List<Ad> adList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_profile);
 
-        // --- 1. Get Seller ID from Intent ---
         sellerUserId = getIntent().getStringExtra("userId");
         if (sellerUserId == null || sellerUserId.isEmpty()) {
             Toast.makeText(this, "Seller ID not found.", Toast.LENGTH_SHORT).show();
@@ -48,27 +45,23 @@ public class SellerProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // --- 2. Initialize UI elements ---
         backBtn = findViewById(R.id.backBtn);
+        profileImageIv = findViewById(R.id.profileImageIv);
         sellerNameTv = findViewById(R.id.sellerNameTv);
         memberSinceTv = findViewById(R.id.memberSinceTv);
         sellerAdsRv = findViewById(R.id.sellerAdsRv);
 
-        // --- 3. Firebase Setup ---
         usersRef = FirebaseDatabase.getInstance().getReference("users");
         adsRef = FirebaseDatabase.getInstance().getReference("ads");
 
-        // --- 4. RecyclerView Setup ---
         adList = new ArrayList<>();
         sellerAdsAdapter = new SellerAdsAdapter(this, adList);
         sellerAdsRv.setLayoutManager(new LinearLayoutManager(this));
         sellerAdsRv.setAdapter(sellerAdsAdapter);
 
-        // --- 5. Load Seller Data and Ads ---
         loadSellerDetails();
         loadSellerAds();
 
-        // --- 6. Set Listeners ---
         backBtn.setOnClickListener(v -> finish());
     }
 
@@ -111,7 +104,12 @@ public class SellerProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         adList.clear();
+                        for (DataSnapshot adSnap : snapshot.getChildren()) {
+                            Ad ad = adSnap.getValue(Ad.class);
+                            if (ad != null) adList.add(ad);
+                        }
                         sellerAdsAdapter.notifyDataSetChanged();
+
                         if (adList.isEmpty()) {
                             Toast.makeText(SellerProfileActivity.this, "This seller has no ads.", Toast.LENGTH_SHORT).show();
                         }
@@ -124,5 +122,3 @@ public class SellerProfileActivity extends AppCompatActivity {
                 });
     }
 }
-
-//SellerProfileActivity

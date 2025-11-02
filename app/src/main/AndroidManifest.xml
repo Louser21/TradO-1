@@ -24,6 +24,8 @@
         <activity
             android:name=".RegisterEmailActivity"
             android:exported="false" />
+        <activity android:name=".SellerProfileActivity" android:exported="false"/>
+
         <activity
             android:name=".LoginEmailActivity"
             android:exported="false" />
