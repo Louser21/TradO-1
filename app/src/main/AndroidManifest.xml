@@ -16,6 +16,9 @@
         android:theme="@style/Theme.TradO"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ProfileEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdDetailsActivity"
             android:exported="false" />
         <activity
@@ -24,8 +27,9 @@
         <activity
             android:name=".RegisterEmailActivity"
             android:exported="false" />
-        <activity android:name=".SellerProfileActivity" android:exported="false"/>
-
+        <activity
+            android:name=".SellerProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".LoginEmailActivity"
             android:exported="false" />

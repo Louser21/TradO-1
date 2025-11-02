@@ -1,66 +1,101 @@
 package com.example.trado;
 
 public class User {
-    private String userId; // Optional, if you store it
-    private String fullName;
+    private String userId;
+    private String name;
     private String email;
-    private String memberSince;
+    private String dob;
+    private String phoneCode;
+    private String phoneNumber;
     private String profileImageUrl;
-    // Add other user-related fields as per your Firebase database
+    private String userType;
+    private String timestamp;
 
     public User() {
-        // Default constructor required for Firebase
     }
 
-    public User(String userId, String fullName, String email, String memberSince, String profileImageUrl) {
+    public User(String userId, String name, String email, String dob, String phoneCode, String phoneNumber,
+                String profileImageUrl, String userType, String timestamp) {
         this.userId = userId;
-        this.fullName = fullName;
+        this.name = name;
         this.email = email;
-        this.memberSince = memberSince;
+        this.dob = dob;
+        this.phoneCode = phoneCode;
+        this.phoneNumber = phoneNumber;
         this.profileImageUrl = profileImageUrl;
+        this.userType = userType;
+        this.timestamp = timestamp;
     }
 
-    // --- Getters ---
     public String getUserId() {
         return userId;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getMemberSince() {
-        return memberSince;
+    public String getDob() {
+        return dob;
+    }
+
+    public String getPhoneCode() {
+        return phoneCode;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
 
-    // --- Setters (optional) ---
+    public String getUserType() {
+        return userType;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setMemberSince(String memberSince) {
-        this.memberSince = memberSince;
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public void setPhoneCode(String phoneCode) {
+        this.phoneCode = phoneCode;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
-}
 
-//User Java
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+}
