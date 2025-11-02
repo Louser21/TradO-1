@@ -5,22 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/bg_light"
     tools:context=".ProfileEditActivity">
 
+    <!-- Toolbar -->
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp">
 
         <ImageButton
             android:id="@+id/toolbarBackBtn"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:padding="10dp"
-            android:src="@drawable/ic_back" />
+            android:layout_centerInParent="true"
+            android:text="Edit Profile"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -29,20 +43,27 @@
             android:background="@color/colorGray02" />
     </RelativeLayout>
 
+    <!-- Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:clipToPadding="false">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
+            <!-- Profile Image -->
             <RelativeLayout
                 android:id="@+id/profileRL"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_centerHorizontal="true">
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="20dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profileIv"
@@ -58,135 +79,135 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:contentDescription="TODO"
+                    android:layout_alignParentBottom="true"
                     android:src="@drawable/ic_photo_white"
                     app:fabSize="mini"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    app:backgroundTint="@color/purple_500"
+                    android:contentDescription="Change Profile Picture" />
             </RelativeLayout>
 
+            <!-- Name -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameTil"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profileRL"
-                android:layout_marginTop="10dp"
-                android:hint="Name"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:startIconDrawable="@drawable/ic_person_white">
+                android:hint="Full Name"
+                app:startIconTint="@color/colorGray02"
+                app:boxStrokeColor="@color/colorGray02"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName|textCapWords" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- DOB -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/dobTil"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/nameTil"
-                android:layout_marginTop="10dp"
-                android:hint="DOB(dd/MM/yyyy)"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:startIconDrawable="@drawable/ic_calender_gray">
+                android:layout_marginTop="16dp"
+                android:hint="Date of Birth (dd/MM/yyyy)"
+                app:startIconTint="@color/colorGray02"
+                app:boxStrokeColor="@color/colorGray02"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dobEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapWords" />
-
+                    android:inputType="date" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/emailTil"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/dobTil"
-                android:layout_marginTop="10dp"
-                android:hint="Email"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
-                app:startIconDrawable="@drawable/ic_email_white">
+                android:layout_marginTop="16dp"
+                android:hint="Email Address"
+                app:startIconTint="@color/colorGray02"
+                app:boxStrokeColor="@color/colorGray02"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
-            <RelativeLayout
-                android:id = "@+id/phoneInputRl"
+            <!-- Phone -->
+            <LinearLayout
+                android:id="@+id/phoneInputRl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below = "@id/emailTil">
-
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/countryCodePicker"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
-                    android:minWidth="60dp"
-                    android:minHeight="56dp"
                     app:ccp_autoDetectCountry="true"
                     app:ccp_rememberLastSelection="true"
                     app:ccp_showFlag="false"
-                    app:ccp_showNameCode="false"/>
-
+                    app:ccp_showNameCode="false" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/phoneNumberTil"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/countryCodePicker"
+                    android:layout_weight="1"
                     android:hint="Phone Number"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:startIconDrawable="@drawable/ic_call_white">
+                    app:startIconTint="@color/colorGray02"
+                    app:boxStrokeColor="@color/colorGray02"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp">
 
-
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/phoneNumberEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType = "phone"/>
-
-
+                        android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
-            </RelativeLayout>
+            </LinearLayout>
 
+            <!-- Update Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/updateBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below = "@id/phoneInputRl"
-                android:text="Update"
-                android:layout_marginTop = "20dp"
-                app:cornerRadius="8dp"
+                android:layout_marginTop="30dp"
+                android:text="Update Profile"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/purple_500"
+                android:minHeight="52dp"
+                app:cornerRadius="12dp"
                 app:icon="@drawable/ic_person_white"
-                android:minHeight="@dimen/m_button_height"/>
-        </RelativeLayout>
+                app:iconGravity="textStart"
+                app:iconPadding="8dp" />
+        </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

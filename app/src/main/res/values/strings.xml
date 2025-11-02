@@ -2,4 +2,12 @@
     <string name="app_name">TradO</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="category_icon">Category icon</string>
+    <string name="ad_image">Ad image</string>
+    <string name="ad_title">Ad title</string>
+    <string name="ad_description">Ad description</string>
+    <string name="ad_price">Ad price</string>
+
+    <string name="favorite">Favorite</string>
+
 </resources>

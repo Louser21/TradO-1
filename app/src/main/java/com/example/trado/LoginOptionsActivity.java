@@ -28,25 +28,10 @@ public class LoginOptionsActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        });
+        binding.closeBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginOptionsActivity.this, LoginEmailActivity.class));
-            }
-        });
+        binding.loginBtn.setOnClickListener(view -> startActivity(new Intent(LoginOptionsActivity.this, LoginEmailActivity.class)));
 
-        binding.registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginOptionsActivity.this, RegisterEmailActivity.class));
-            }
-        });
+        binding.registerBtn.setOnClickListener(view -> startActivity(new Intent(LoginOptionsActivity.this, RegisterEmailActivity.class)));
     }
 }

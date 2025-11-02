@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F9FAFB"
     android:padding="20dp"
-    android:background="#FAFAFA"
     tools:context=".AddAdActivity">
 
     <LinearLayout
@@ -12,72 +13,121 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingBottom="30dp">
+        android:paddingBottom="40dp">
 
+        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Post New Ad"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
 
-        <ImageView
-            android:id="@+id/imageIv"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
-            android:background="#E0E0E0"
-            android:layout_marginBottom="12dp"
-            android:contentDescription="Selected Image" />
+        <!-- Image Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
 
-        <Button
+            <ImageView
+                android:id="@+id/imageIv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_placeholder"
+                android:contentDescription="Selected Image" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Select Image Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/selectImgBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Image"
-            android:layout_marginBottom="20dp" />
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/teal_700"
+            app:cornerRadius="24dp"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="24dp"
+            android:icon="@drawable/ic_photo_white"
+            android:iconTint="@color/white"/>
 
-        <EditText
-            android:id="@+id/titleEt"
+        <!-- Form Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"
-            android:inputType="textCapWords"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="12dp" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:padding="20dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
 
-        <EditText
-            android:id="@+id/descEt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="12dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:dividerPadding="12dp">
 
-        <EditText
-            android:id="@+id/priceEt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price"
-            android:inputType="numberDecimal"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="20dp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title">
 
-        <Button
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/titleEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/descEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Price">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/priceEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Upload Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/uploadBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Upload Ad"
-            android:backgroundTint="#3F51B5"
-            android:textColor="@android:color/white"
-            android:padding="14dp" />
-
+            android:textAllCaps="false"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white"
+            android:icon="@drawable/ic_upload"
+            android:iconTint="@color/white"
+            app:cornerRadius="16dp"
+            android:paddingVertical="14dp"/>
     </LinearLayout>
 </ScrollView>

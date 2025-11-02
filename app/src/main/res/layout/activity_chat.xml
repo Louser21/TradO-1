@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGray01">
+
+    <!-- Top Toolbar -->
+    <RelativeLayout
+        android:id="@+id/toolbarRL"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:backgroundTintMode="src_over"
+        android:elevation="4dp"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/toolbarBackBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@android:color/white" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/toolbarProfileIv"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/toolbarBackBtn"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_person_grey"
+            app:shapeAppearanceOverlay="@style/ImageStyle_Circle"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/toolbarProfileIv"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:id="@+id/toolbarTitleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/toolbarStatusTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="online"
+                android:textSize="12sp"
+                android:textColor="@color/white_translucent" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Chat List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRv"
+        android:layout_below="@id/toolbarRL"
+        android:layout_above="@+id/chatInputRL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:clipToPadding="false" />
+
+    <!-- Input Bar -->
+    <LinearLayout
+        android:id="@+id/chatInputRL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:elevation="4dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/attachFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_image_grey"
+            app:fabSize="mini"
+            app:tint="@android:color/white"
+            app:backgroundTint="@color/colorPrimaryLight"
+            android:layout_marginEnd="6dp" />
+
+        <EditText
+            android:id="@+id/messageEt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Type a message..."
+            android:background="@drawable/bg_edittext"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:textColor="@color/black"
+            android:textColorHint="@color/colorGray03" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/sendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_send"
+            app:fabSize="mini"
+            app:tint="@android:color/white"
+            app:backgroundTint="@color/colorPrimary"
+            android:layout_marginStart="6dp" />
+    </LinearLayout>
+</RelativeLayout>

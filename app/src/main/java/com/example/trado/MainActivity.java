@@ -1,30 +1,47 @@
 package com.example.trado;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.trado.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    private static final String TAG = "MAIN_TAG";
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -42,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
             startLoginOptions();
             finish(); // optional: prevent returning to MainActivity without login
             return;
+        }else{
+            updateFCMToken();
+            askNotificationPermission();
         }
 
 
@@ -100,4 +120,56 @@ public class MainActivity extends AppCompatActivity {
     private void startLoginOptions() {
         startActivity(new Intent(this, LoginOptionsActivity.class));
     }
+
+    private void updateFCMToken() {
+        String myUid = firebaseAuth.getUid();
+        Log.d(TAG, "My UID: " + myUid);
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(token -> {
+                    Log.d(TAG, "Token: " + token);
+
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("fcmToken", token);
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+                    ref.child(myUid).updateChildren(hashMap)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "onSuccess: Token Updated...!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "onFailure: ",e );
+                                }
+                            });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                         Log.e(TAG, "Failed to get token: " + e.getMessage());
+                    }
+                });
+    }
+
+    private void askNotificationPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED){
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS); 
+            }
+        }
+    }
+
+    private ActivityResultLauncher<String> requestNotificationPermission = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean o) {
+                    Log.d(TAG, "onActivityResult: Notification Permission STATUS: "+o);
+                }
+            }
+    );
 }

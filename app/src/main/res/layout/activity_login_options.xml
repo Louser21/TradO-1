@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bg_light"
     tools:context=".LoginOptionsActivity">
 
     <ImageButton
@@ -23,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="24dp"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:layout_below="@id/closeBtn">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,26 +37,28 @@
                 android:layout_height="180dp"
                 android:src="@drawable/wwy"
                 android:adjustViewBounds="true"
-                android:layout_marginBottom="32dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="36dp"
                 android:contentDescription="App Logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Welcome to Trado"
-                android:textSize="24sp"
+                android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp"/>
+                android:textColor="@color/purple_500"
+                android:letterSpacing="0.02"
+                android:layout_marginBottom="12dp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:text="Sign in or create a new account to continue"
                 android:textSize="14sp"
-                android:textColor="@color/colorGray02"
+                android:textColor="@color/gray_dark"
                 android:gravity="center"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginBottom="40dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginBtn"
@@ -63,24 +66,30 @@
                 android:layout_height="wrap_content"
                 android:text="Login"
                 android:textColor="@color/white"
+                android:textStyle="bold"
                 android:backgroundTint="@color/purple_500"
-                android:minHeight="50dp"
+                android:minHeight="52dp"
                 android:elevation="4dp"
-                android:layout_marginBottom="16dp"
-                app:cornerRadius="12dp"/>
+                android:letterSpacing="0.02"
+                app:cornerRadius="14dp"
+                android:layout_marginBottom="16dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Register"
+                android:textStyle="bold"
                 android:textColor="@color/purple_500"
-                android:backgroundTint="@color/white"
-                app:strokeWidth="@dimen/stroke_width"
-                android:strokeColor="@color/purple_500"
-                android:minHeight="50dp"
+                android:minHeight="52dp"
                 android:elevation="0dp"
-                app:cornerRadius="12dp"/>
+                app:cornerRadius="14dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/purple_500"
+                android:backgroundTint="@color/white"
+                android:letterSpacing="0.02" />
+
+
         </LinearLayout>
 
     </ScrollView>

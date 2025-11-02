@@ -29,4 +29,11 @@
     <color name="success">#4CAF50</color>
     <color name="warning">#FFC107</color>
     <color name="error">#F44336</color>
+
+    <color name="colorPrimary">#1976D2</color>
+    <color name="colorPrimaryLight">#BBDEFB</color>
+
+    <color name="white_translucent">#80FFFFFF</color>
+    <color name="colorGray03">#9E9E9E</color>
+
 </resources>

@@ -113,10 +113,10 @@ public class RegisterEmailActivity extends AppCompatActivity {
         String registerUserUid = firebaseAuth.getUid();
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("name", ""); // You can fill with user input
+        hashMap.put("name", "");
         hashMap.put("phoneCode", "");
         hashMap.put("phoneNumber", "");
-        hashMap.put("profileImageUrl", ""); // Optional, empty initially
+        hashMap.put("profileImageUrl", "");
         hashMap.put("dob", "");
         hashMap.put("userType", "Email");
         hashMap.put("typingTo", "");

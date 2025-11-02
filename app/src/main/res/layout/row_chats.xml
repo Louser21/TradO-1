@@ -1,0 +1,51 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="10dp">
+
+
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileIv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/colorGray01"
+            android:src="@drawable/ic_person_white"
+            android:layout_marginEnd="10dp"
+            app:shapeAppearanceOverlay="@style/ImageStyle_Circle" />
+
+        <TextView
+            android:id="@+id/nameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/profileIv"
+            android:text="Full Name"
+            style="@style/TextAppearance.MaterialComponents.Body1" />
+
+        <TextView
+            android:id="@+id/lastMessageTv"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/profileIv"
+            android:layout_below="@id/nameTv"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Last message here"/>
+
+        <TextView
+            android:id="@+id/dateTimeTv"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="01/02/23" />
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,44 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@color/white"
+    android:padding="16dp"
+    android:background="#FAFAFA"
     tools:context=".HomeFragment">
 
     <!-- Search Bar -->
-    <EditText
-        android:id="@+id/searchEt"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search ads or categories..."
-        android:drawableStart="@drawable/ic_search"
-        android:drawablePadding="8dp"
-        android:background="@drawable/bg_rounded"
-        android:padding="12dp"
-        android:inputType="text"
-        android:textSize="14sp"
-        android:layout_marginBottom="10dp" />
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_searchbar"
+        android:paddingHorizontal="12dp"
+        android:gravity="center_vertical"
+        android:elevation="2dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search"
+            app:tint="@color/colorGray01" />
+
+        <EditText
+            android:id="@+id/searchEt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="Search ads or categories..."
+            android:background="@null"
+            android:paddingStart="8dp"
+            android:textSize="14sp"
+            android:inputType="text"
+            android:imeOptions="actionSearch" />
+    </LinearLayout>
 
     <!-- Browse Categories -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BROWSE CATEGORIES"
+        android:text="Browse Categories"
         android:textStyle="bold"
-        android:textSize="13sp"
-        android:layout_marginBottom="6dp"
-        android:letterSpacing="0.02" />
+        android:textSize="15sp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="#222222" />
 
     <!-- Horizontal Categories Recycler -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoriesRv"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="100dp"
         android:orientation="horizontal"
         android:overScrollMode="never"
+        android:paddingHorizontal="2dp"
         tools:listitem="@layout/item_category" />
 
     <!-- Divider -->
@@ -46,7 +64,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#E0E0E0"
-        android:layout_marginVertical="10dp" />
+        android:layout_marginVertical="14dp" />
+
+    <!-- Featured Ads Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Featured Ads"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#222222"
+        android:layout_marginBottom="6dp" />
 
     <!-- Ads Recycler -->
     <androidx.recyclerview.widget.RecyclerView
@@ -55,6 +83,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="12dp"
         tools:listitem="@layout/item_ad" />
 
 </LinearLayout>

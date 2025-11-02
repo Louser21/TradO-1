@@ -44,19 +44,9 @@ public class LoginEmailActivity extends AppCompatActivity {
 
 
 
-        binding.toolbarBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        binding.toolbarBackBtn.setOnClickListener(view -> onBackPressed());
 
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                validateData();
-            }
-        });
+        binding.loginBtn.setOnClickListener(view -> validateData());
 
         binding.forgotPasswordTv.setOnClickListener(v -> {
             String email = binding.emailEt.getText().toString().trim();
@@ -110,22 +100,16 @@ public class LoginEmailActivity extends AppCompatActivity {
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        Log.d(TAG, "onSuccess: Logged in");
-                        progressDialog.dismiss();
-                        startActivity(new Intent(LoginEmailActivity.this, MainActivity.class));
-                        finish();
-                    }
+                .addOnSuccessListener(authResult -> {
+                    Log.d(TAG, "onSuccess: Logged in");
+                    progressDialog.dismiss();
+                    startActivity(new Intent(LoginEmailActivity.this, MainActivity.class));
+                    finish();
                 })
-                .addOnFailureListener(new OnFailureListener(){
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "onFailure: " + e);
-                        Utils.toast(LoginEmailActivity.this, "Failed due to " + e.getMessage());
-                        progressDialog.dismiss();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "onFailure: " + e);
+                    Utils.toast(LoginEmailActivity.this, "Failed due to " + e.getMessage());
+                    progressDialog.dismiss();
                 });
     }
 }
