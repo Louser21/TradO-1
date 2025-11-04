@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fillViewport="true"
     android:background="@color/bg_light"
     tools:context=".AccountFragment">
 
     <LinearLayout
+        android:id="@+id/accountContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="16dp"
         android:gravity="center_horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView

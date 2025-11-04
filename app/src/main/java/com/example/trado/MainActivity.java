@@ -134,18 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
                     ref.child(myUid).updateChildren(hashMap)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Log.d(TAG, "onSuccess: Token Updated...!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e(TAG, "onFailure: ",e );
-                                }
-                            });
+                            .addOnSuccessListener(unused -> Log.d(TAG, "onSuccess: Token Updated...!"))
+                            .addOnFailureListener(e -> Log.e(TAG, "onFailure: ",e ));
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -165,11 +155,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<String> requestNotificationPermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            new ActivityResultCallback<Boolean>() {
-                @Override
-                public void onActivityResult(Boolean o) {
-                    Log.d(TAG, "onActivityResult: Notification Permission STATUS: "+o);
-                }
-            }
+            o -> Log.d(TAG, "onActivityResult: Notification Permission STATUS: "+o)
     );
 }

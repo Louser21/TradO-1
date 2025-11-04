@@ -1,4 +1,4 @@
-package com.example.trado;
+package com.example.trado.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.trado.Ad;
+import com.example.trado.AdDetailsActivity;
+import com.example.trado.R;
 
 import java.util.List;
 

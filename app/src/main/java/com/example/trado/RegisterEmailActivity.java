@@ -74,10 +74,10 @@ public class RegisterEmailActivity extends AppCompatActivity {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.emailTil.setError("Invalid Email Format");
             binding.emailEt.requestFocus();
-        } else if (!email.matches(".*@(nitw\\.ac\\.in|students\\.nitw\\.ac\\.in)$")) {
-            binding.emailTil.setError("Email must be a NITW domain");
+        } else if (!email.matches("^[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\\.)?nitw\\.ac\\.in$")) {
+            binding.emailTil.setError("Email must end with nitw.ac.in domain");
             binding.emailEt.requestFocus();
-        } else if (password.isEmpty()) {
+        }else if (password.isEmpty()) {
             binding.passwordEt.setError("Password cannot be empty");
             binding.passwordEt.requestFocus();
         } else if (!password.equals(confirmPassword)) {
@@ -113,7 +113,7 @@ public class RegisterEmailActivity extends AppCompatActivity {
         String registerUserUid = firebaseAuth.getUid();
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("name", "");
+        hashMap.put("name",name);
         hashMap.put("phoneCode", "");
         hashMap.put("phoneNumber", "");
         hashMap.put("profileImageUrl", "");

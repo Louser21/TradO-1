@@ -70,11 +70,15 @@ public class ChatsFragment extends Fragment {
 
     private void loadChats() {
         chatsArrayList = new ArrayList<>();
+        adapterChats = new AdapterChat(mContext, chatsArrayList, myUid);
+        binding.chatsRv.setAdapter(adapterChats);
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Chats");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatsArrayList.clear();
+
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     String chatKey = ds.getKey();
                     if (chatKey != null && chatKey.contains(myUid)) {
@@ -98,6 +102,7 @@ public class ChatsFragment extends Fragment {
                         modelChats.setLastMessage(lastMsg);
                         modelChats.setToUid(otherUid);
 
+                        // fetch other user details async
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(otherUid);
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -117,15 +122,13 @@ public class ChatsFragment extends Fragment {
                         });
                     }
                 }
-
-                adapterChats = new AdapterChat(mContext, chatsArrayList, myUid);
-                binding.chatsRv.setAdapter(adapterChats);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 
     private void sortChats() {
         new Handler().postDelayed(() -> {
