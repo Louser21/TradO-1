@@ -208,6 +208,7 @@
                 app:icon="@drawable/ic_person_white"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -93,4 +93,7 @@ dependencies {
 
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.40.0'
     implementation 'com.hbb20:ccp:2.7.3'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'org.json:json:20230618' // if needed
 }

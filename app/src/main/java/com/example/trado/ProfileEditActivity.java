@@ -1,40 +1,68 @@
 package com.example.trado;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
+import androidx.appcompat.widget.PopupMenu;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
 import com.example.trado.databinding.ActivityProfileEditBinding;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
-import com.google.firebase.storage.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ProfileEditActivity extends AppCompatActivity {
 
+    private static final String TAG = "PROFILE_EDIT_TAG";
+    private static final int TIMEOUT_SECONDS = 60;
+    private static final String CLOUD_NAME = "dhlj92dvw";
+    private static final String UPLOAD_PRESET = "trado_app";
+    private static final String CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload";
+
     private ActivityProfileEditBinding binding;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference dbRef;
     private ProgressDialog progressDialog;
-    private static final String TAG = "PROFILE_EDIT_TAG";
     private String myUserType = "";
     private Uri imageUri = null;
+
+    private String name = "", email = "", phoneCode = "", phoneNumber = "", dob = "";
+
+    private final OkHttpClient httpClient = new OkHttpClient.Builder()
+            .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +70,19 @@ public class ProfileEditActivity extends AppCompatActivity {
         binding = ActivityProfileEditBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance().getReference("Users");
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait...");
         progressDialog.setCanceledOnTouchOutside(false);
 
-        firebaseAuth = FirebaseAuth.getInstance();
         loadMyInfo();
 
         binding.toolbarBackBtn.setOnClickListener(v -> onBackPressed());
-
         binding.pickImageFab.setOnClickListener(v -> imagePickDialog());
-
         binding.updateBtn.setOnClickListener(v -> validateData());
     }
-
-    private String name = "", email = "", phoneCode = "", phoneNumber = "", dob = "";
 
     private void validateData() {
         name = binding.nameEt.getText().toString().trim();
@@ -66,54 +92,119 @@ public class ProfileEditActivity extends AppCompatActivity {
         dob = binding.dobEt.getText().toString().trim();
 
         if (imageUri == null) updateProfileDb(null);
-        else uploadProfileImageStorage();
+        else uploadProfileImageToCloudinary();
     }
 
-    private void uploadProfileImageStorage() {
-        Log.d(TAG, "uploadProfileImageStorage: ");
+    private void uploadProfileImageToCloudinary() {
         progressDialog.setMessage("Uploading profile image...");
         progressDialog.show();
 
-        String filePathAndName = "UserImages/" + "profile_" + firebaseAuth.getUid();
-        StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+        byte[] imgBytes = uriToBytes(imageUri);
+        if (imgBytes == null) {
+            progressDialog.dismiss();
+            Utils.toast(this, "Failed to read image");
+            return;
+        }
 
-        ref.putFile(imageUri)
-                .addOnProgressListener(snapshot -> {
-                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog.setMessage("Uploading profile image: " + (int) progress + "%");
-                })
-                .addOnSuccessListener(taskSnapshot -> {
-                    Log.d(TAG, "onSuccess: Uploaded");
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    uriTask.addOnSuccessListener(uri -> updateProfileDb(uri.toString()));
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "onFailure: ", e);
+        String filename = getFileNameFromUri(imageUri);
+        if (filename == null) filename = firebaseAuth.getUid() + "_profile.jpg";
+
+        String mime = getContentResolver().getType(imageUri);
+        MediaType mediaType = MediaType.parse(mime != null ? mime : "image/jpeg");
+
+        MultipartBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", filename, RequestBody.create(imgBytes, mediaType))
+                .addFormDataPart("upload_preset", UPLOAD_PRESET)
+                .addFormDataPart("resource_type", "image")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(CLOUDINARY_UPLOAD_URL)
+                .post(requestBody)
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final java.io.IOException e) {
+                runOnUiThread(() -> {
                     progressDialog.dismiss();
-                    Utils.toast(ProfileEditActivity.this, "Failed to upload image: " + e.getMessage());
+                    Utils.toast(ProfileEditActivity.this, "Image upload failed: " + e.getMessage());
                 });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                String respBody = "";
+                try {
+                    if (response.body() != null) respBody = response.body().string();
+                } catch (Exception e) {
+                    respBody = "";
+                }
+
+                if (!response.isSuccessful()) {
+                    String errMsg = "Upload failed: HTTP " + response.code();
+                    try {
+                        JSONObject errObj = new JSONObject(respBody);
+                        if (errObj.has("error")) {
+                            JSONObject err = errObj.optJSONObject("error");
+                            if (err != null && err.has("message")) errMsg += " - " + err.optString("message");
+                        } else {
+                            errMsg += " - " + respBody;
+                        }
+                    } catch (Exception ignored) {
+                        errMsg += " - " + respBody;
+                    }
+                    final String finalErr = errMsg;
+                    runOnUiThread(() -> {
+                        progressDialog.dismiss();
+                        Utils.toast(ProfileEditActivity.this, finalErr);
+                    });
+                    return;
+                }
+
+                try {
+                    JSONObject obj = new JSONObject(respBody);
+                    String imageUrl = obj.optString("secure_url", "");
+                    if (imageUrl == null || imageUrl.isEmpty()) {
+                        String debug = "No secure_url returned: " + respBody;
+                        runOnUiThread(() -> {
+                            progressDialog.dismiss();
+                            Utils.toast(ProfileEditActivity.this, debug);
+                        });
+                        return;
+                    }
+                    runOnUiThread(() -> updateProfileDb(imageUrl));
+                } catch (Exception e) {
+                    runOnUiThread(() -> {
+                        progressDialog.dismiss();
+                        Utils.toast(ProfileEditActivity.this, "Upload parse error: " + e.getMessage());
+                    });
+                } finally {
+                    if (response.body() != null) response.close();
+                }
+            }
+        });
     }
 
     private void updateProfileDb(String imageUrl) {
-        progressDialog.setMessage("Updating user info...");
+        progressDialog.setMessage("Updating profile...");
         progressDialog.show();
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("name", name);
-        hashMap.put("dob", dob);
-
-        if (imageUrl != null) hashMap.put("profileImageUrl", imageUrl);
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", name);
+        data.put("dob", dob);
+        if (imageUrl != null) data.put("profileImageUrl", imageUrl);
 
         if (!myUserType.equalsIgnoreCase("Email") && !myUserType.equalsIgnoreCase("Google")) {
-            hashMap.put("email", email);
+            data.put("email", email);
         } else if (myUserType.equalsIgnoreCase("Phone")) {
-            hashMap.put("phoneCode", phoneCode);
-            hashMap.put("phoneNumber", phoneNumber);
+            data.put("phoneCode", phoneCode);
+            data.put("phoneNumber", phoneNumber);
         }
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-        ref.child(firebaseAuth.getUid())
-                .updateChildren(hashMap)
+        dbRef.child(firebaseAuth.getUid())
+                .updateChildren(data)
                 .addOnSuccessListener(unused -> {
                     progressDialog.dismiss();
                     Utils.toast(ProfileEditActivity.this, "Profile updated successfully!");
@@ -125,134 +216,114 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
     private void loadMyInfo() {
-        Log.d(TAG, "loadMyInfo:");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-        ref.child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String dob = "" + snapshot.child("dob").getValue();
-                String email = "" + snapshot.child("email").getValue();
-                String name = "" + snapshot.child("name").getValue();
-                String phoneCode = "" + snapshot.child("phoneCode").getValue();
-                String phoneNumber = "" + snapshot.child("phoneNumber").getValue();
-                String profileImageUrl = "" + snapshot.child("profileImageUrl").getValue();
-                myUserType = "" + snapshot.child("userType").getValue();
+        dbRef.child(firebaseAuth.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String dob = snapshot.child("dob").getValue(String.class);
+                            String email = snapshot.child("email").getValue(String.class);
+                            String name = snapshot.child("name").getValue(String.class);
+                            String phoneCode = snapshot.child("phoneCode").getValue(String.class);
+                            String phoneNumber = snapshot.child("phoneNumber").getValue(String.class);
+                            String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                            myUserType = snapshot.child("userType").getValue(String.class);
 
-                if (myUserType.equalsIgnoreCase("Email") || myUserType.equalsIgnoreCase("Google")) {
-                    binding.emailEt.setEnabled(false);
-                } else {
-                    binding.phoneNumberEt.setEnabled(false);
-                    binding.countryCodePicker.setEnabled(false);
-                }
+                            binding.nameEt.setText(name);
+                            binding.emailEt.setText(email);
+                            binding.dobEt.setText(dob);
+                            binding.phoneNumberEt.setText(phoneNumber);
+                            if (phoneCode != null && !phoneCode.isEmpty() && phoneCode.startsWith("+")) {
+                                try {
+                                    int code = Integer.parseInt(phoneCode.replace("+", ""));
+                                    binding.countryCodePicker.setCountryForPhoneCode(code);
+                                } catch (NumberFormatException e) {
+                                    Log.e(TAG, "Invalid phone code: " + phoneCode);
+                                }
+                            } else binding.countryCodePicker.setDefaultCountryUsingNameCode("IN");
 
-                binding.emailEt.setText(email);
-                binding.nameEt.setText(name);
-                binding.phoneNumberEt.setText(phoneNumber);
-                binding.dobEt.setText(dob);
+                            if (profileImageUrl != null && !profileImageUrl.isEmpty())
+                                Glide.with(ProfileEditActivity.this).load(profileImageUrl).into(binding.profileIv);
+                        }
+                    }
 
-                try {
-                    int codeInt = Integer.parseInt(phoneCode.replace("+", ""));
-                    binding.countryCodePicker.setCountryForPhoneCode(codeInt);
-                } catch (Exception e) {
-                    Log.d(TAG, "onDataChange: invalid code " + e);
-                }
-
-                try {
-                    Glide.with(ProfileEditActivity.this)
-                            .load(profileImageUrl)
-                            .placeholder(R.drawable.ic_person_white)
-                            .into(binding.profileIv);
-                } catch (Exception e) {
-                    Log.e(TAG, "onDataChange: ", e);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "loadMyInfo: ", error.toException());
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, "DB load error", error.toException());
+                    }
+                });
     }
 
     private void imagePickDialog() {
         PopupMenu popupMenu = new PopupMenu(this, binding.pickImageFab);
-        popupMenu.getMenu().add(Menu.NONE, 1, 1, "Camera");
-        popupMenu.getMenu().add(Menu.NONE, 2, 2, "Gallery");
+        popupMenu.getMenu().add("Camera");
+        popupMenu.getMenu().add("Gallery");
         popupMenu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == 1) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestCameraPermissions.launch(new String[]{Manifest.permission.CAMERA});
-                } else {
-                    requestCameraPermissions.launch(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE});
-                }
-            } else if (item.getItemId() == 2) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    pickImageGallery();
-                } else {
-                    requestStoragePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                }
-            }
+            if (item.getTitle().equals("Camera")) pickImageCamera();
+            else pickImageGallery();
             return true;
         });
         popupMenu.show();
     }
 
-    private final ActivityResultLauncher<String[]> requestCameraPermissions =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
-                    result -> {
-                        boolean allGranted = true;
-                        for (boolean granted : result.values()) {
-                            allGranted &= granted;
-                        }
-                        if (allGranted) pickImageCamera();
-                        else Utils.toast(this, "Camera and Storage permissions are required!");
-                    });
+    private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    imageUri = result.getData().getData();
+                    Glide.with(this).load(imageUri).into(binding.profileIv);
+                }
+            });
 
-    private final ActivityResultLauncher<String> requestStoragePermission =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
-                    granted -> {
-                        if (granted) pickImageGallery();
-                        else Utils.toast(this, "Storage permission is required!");
-                    });
-
-    private void pickImageCamera() {
-        ContentValues cv = new ContentValues();
-        cv.put(MediaStore.Images.Media.TITLE, "Temp_Title");
-        cv.put(MediaStore.Images.Media.DESCRIPTION, "Temp_Description");
-
-        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        cameraActivityResultLauncher.launch(intent);
-    }
-
-    private final ActivityResultLauncher<Intent> cameraActivityResultLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Glide.with(this)
-                                    .load(imageUri)
-                                    .placeholder(R.drawable.ic_person_white)
-                                    .into(binding.profileIv);
-                        } else Utils.toast(this, "Image capture failed.");
-                    });
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Glide.with(this).load(imageUri).into(binding.profileIv);
+                }
+            });
 
     private void pickImageGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        galleryActivityResultLauncher.launch(intent);
+        galleryLauncher.launch(intent);
     }
 
-    private final ActivityResultLauncher<Intent> galleryActivityResultLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                            imageUri = result.getData().getData();
-                            Glide.with(this)
-                                    .load(imageUri)
-                                    .placeholder(R.drawable.ic_person_white)
-                                    .into(binding.profileIv);
-                        } else Utils.toast(this, "Image pick failed.");
-                    });
+    private void pickImageCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Profile Image");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Camera Image");
+        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        cameraLauncher.launch(intent);
+    }
+
+    private byte[] uriToBytes(Uri uri) {
+        try {
+            InputStream is = getContentResolver().openInputStream(uri);
+            if (is == null) return null;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = is.read(buf)) >= 0) baos.write(buf, 0, n);
+            is.close();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String name = null;
+        try {
+            String[] proj = {MediaStore.MediaColumns.DISPLAY_NAME};
+            android.database.Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
+                cursor.close();
+            }
+        } catch (Exception ignored) {}
+        return name;
+    }
 }
