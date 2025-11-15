@@ -1,95 +1,77 @@
-# TradO (Android)
+# TradO Android  
+Dense README — quick reference for building, running, and understanding this repository.
 
-Dense README — quick reference for building, running and understanding this repository.
+## Summary  
+TradO is an Android application inside the `app` module.  
+Source code lives in `app/src/main/java/com/example/trado/` and resources in `app/src/main/res/`.
 
-## Summary
+## Requirements  
+- JDK 11+  
+- Android Studio  
+- Gradle Wrapper included  
+- Android device or emulator matching the project `compileSdk`
 
-TradO is an Android application located in the `app` module. The app code lives under
-`app/src/main/java/com/example/trado/` and resources under `app/src/main/res/`.
+## How to Run This Project in Android Studio  
+1. Open **Android Studio**  
+2. Go to **File > Open**  
+3. Select the **root folder** of this repository  
+4. Android Studio will automatically start **Gradle Sync**  
+5. Install any missing SDK components  
+6. Wait for indexing to finish  
+7. Select an emulator or connect a device  
+8. Click the **Run** (green triangle) button  
+9. The app starts from **MainActivity**
 
-This README is intentionally compact and focused: required tools, build and run commands,
-key files, troubleshooting hints, and suggested next steps.
+If Gradle sync errors appear:  
+- Click **Try Again** or **Install Missing Components**  
+- Ensure `app/google-services.json` exists
 
-## Requirements
-
-- JDK 11+ (match Android Gradle Plugin compatibility used by this project)
-- Android Studio (recommended) or command-line Gradle
-- Gradle wrapper is included (`gradlew` / `gradlew.bat`)
-- An Android device or emulator with API level compatible with the module's compileSdk
-
-## Quick build & run (Windows PowerShell)
-
-Open PowerShell in the repository root and run:
-
-```powershell
-# Clean and assemble debug APK
+## Quick Build & Run (Windows PowerShell)  
+```sh
 .\gradlew.bat clean assembleDebug
-
-# Install to a connected device (or emulator)
 .\gradlew.bat installDebug
-
-# Or launch from Android Studio Run configuration
 ```
 
-If you want to build an APK bundle or release build, use `bundleRelease` / `assembleRelease`
-and ensure signing configs are provided.
 
-## Firebase and configuration
+## Firebase and Configuration
+- Keep `app/google-services.json`
+- `MyFcmService` handles Firebase Cloud Messaging
+- Internet permission and `usesCleartextTraffic="true"` enabled in the manifest
 
-- `app/google-services.json` is present. Keep it in place — it's used by Firebase services.
-- The app registers a `Service` named `MyFcmService` (see `app/src/main/java/.../MyFcmService.java`) for FCM.
-- Internet permission is declared in `app/src/main/AndroidManifest.xml` and `usesCleartextTraffic` is enabled.
+## Key Files and Layout
+- `app/src/main/AndroidManifest.xml` — Permissions, Activities, Services
+- `MainActivity.java` — Launcher Activity
+- **Fragments:** HomeFragment, ChatsFragment, MyAdsFragment, AccountFragment
+- **Activities:** AddAdActivity, AdDetailsActivity, ChatActivity, ProfileEditActivity, LoginEmailActivity, RegisterEmailActivity, SellerProfileActivity
+- **Utils:** Utils.java, VolleySingleton.java
+- **Packages:** models/, adapters/, filters/
 
-## Key files and layout
+## Common Issues & Quick Fixes
+- Missing package attribute → Add `package="..."` manually if tools require it
+- Runtime permissions → Request READ_EXTERNAL_STORAGE at runtime for modern SDKs
+- FCM not receiving messages → Validate App ID and service registration
 
-- `app/src/main/AndroidManifest.xml` — app permissions, activities and service declarations.
-- `app/src/main/java/com/example/trado/MainActivity.java` — app entry activity (launcher).
-- Fragments: `HomeFragment`, `ChatsFragment`, `MyAdsFragment`, `AccountFragment` — UI sections.
-- Activities handling flows: `AddAdActivity`, `AdDetailsActivity`, `ChatActivity`, `ProfileEditActivity`, `LoginEmailActivity`, `RegisterEmailActivity`, `SellerProfileActivity`.
-- `utils/Utils.java`, `VolleySingleton.java` — helpers and networking wiring.
-- `models/`, `adapters/`, `filters/` — app domain objects and UI adapters.
+## Tests
 
-If you need a quick map, the Java package is `com.example.trado` and follows a conventional Android structure.
-
-## Common issues & quick fixes
-
-- Missing package attribute in `AndroidManifest.xml`: modern Gradle can inject the applicationId at build time. If you rely on fully-qualified names in manifest entries or use tools that expect an explicit `package="..."`, add it explicitly.
-- Runtime permissions: the app requests `READ_EXTERNAL_STORAGE` in the manifest, but depending on your target SDK you may need to request it at runtime.
-- Firebase messages not received: confirm `google-services.json` matches the appId and that `MyFcmService` is declared correctly.
-
-## Tests and lint
-
-This repository does not include a dedicated test harness in the root; Android unit and instrumentation tests can be run with Gradle tasks:
-
-```powershell
+```sh
 .\gradlew.bat testDebug
 .\gradlew.bat connectedAndroidTest
 ```
 
-## Troubleshooting build failures
 
-- If Gradle fails with missing SDK or compile errors, open the project in Android Studio and let it sync SDK and recommended components.
-- For dependency or plugin issues, check the `build.gradle` files in the root and `app/` module.
+## Troubleshooting
+- If SDK not found → open in Android Studio and install required components
+- If dependencies fail → review both root and module `build.gradle` files
 
-## Small, safe next steps (recommended)
+## Recommended Next Steps
+- Backup `app/src/main` before major edits
+- Add explicit manifest package attribute if needed
+- Optionally add a CONTRIBUTING.md file
+- Conservative, automatic rewrites available if requested
 
-1. Create a backup of `app/src/main` before applying automated edits.
-2. Optionally: add an explicit `package` attribute to the manifest if you rely on fully-qualified component names.
-3. Add a minimal CONTRIBUTING or developer notes file describing Java and Gradle versions used locally.
-4. If you want, I can create conservative code tidy-ups (fix missing imports, standardize package declarations) — I will always create a backup first.
 
-## Where I changed files
-
-- This README was added at the repository root: `README.md`.
-
-## Contact and follow-up
-
-If you'd like me to proceed with automatic, conservative rewrites of files under `app/src/main/java/com/example/trado/` (backed up first), reply with `Backup + Rewrite` and I will:
-
-- create a timestamped backup under `app/src/main/backups/` and
-- apply minimal fixes to manifest and any Java files that have obvious structural issues.
-
-Otherwise, tell me which specific file(s) you want created or rewritten and I'll act on them.
-
----
-Generated on 2025-11-12.
+## Release Builds
+```sh
+.\gradlew.bat bundleRelease
+.\gradlew.bat assembleRelease
+```
